@@ -3,7 +3,6 @@ package com.tcc.lavarapido.models;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -14,15 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
-
-import com.tcc.lavarapido.utils.WashType;
+import com.tcc.lavarapido.enums.WashType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +30,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 //@Table(name = "wash", schema = "carwash")
-@Table(name = "TB_WASH")
+@Table(name = "wash")
 public class Wash implements Serializable {
 
 	/**
@@ -45,9 +41,6 @@ public class Wash implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idWash;
-	
-	@Column(name = "id_user")
-	private Long id_user;
 
 	@Column(nullable = false, columnDefinition = "ENUM('COMPLETE', 'BASIC')")
 	@Enumerated(EnumType.STRING)
@@ -56,10 +49,20 @@ public class Wash implements Serializable {
 	@Column(nullable = false, name = "wash_price")
 	private BigDecimal price;
 
-
 	@Column(name = "dt_reservation")
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime dtReservation;
 	
+	@ManyToOne
+	@JoinColumn(name = "client_id_fk")
+	private Client client;
+
+	public Wash(Long idWash, WashType washType, BigDecimal price, LocalDateTime dtReservation) {
+		super();
+		this.idWash = idWash;
+		this.washType = washType;
+		this.price = price;
+		this.dtReservation = dtReservation;
+	}	
 	
 }
