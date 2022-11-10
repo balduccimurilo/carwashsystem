@@ -17,52 +17,53 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.tcc.lavarapido.models.Client;
+import com.tcc.lavarapido.models.Admin;
 import com.tcc.lavarapido.models.dto.UserDTO;
-import com.tcc.lavarapido.services.ClientService;
+import com.tcc.lavarapido.services.AdminService;
 
 @RestController
-@RequestMapping("/client")
-public class ClientController {
+@RequestMapping("/admin")
+public class AdminController {
 	
-	private ClientService clientService;
+	private AdminService adminService;
 	
 	@Autowired
-	public ClientController(ClientService clientService) {
-		this.clientService = clientService;
+	public AdminController(AdminService adminService) {
+		this.adminService = adminService;
 	}
 	
 	@PostMapping
-	public ResponseEntity<UserDTO> createClient(@RequestBody @Valid UserDTO form, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<UserDTO> createAdmin(@RequestBody @Valid UserDTO form, UriComponentsBuilder uriBuilder) {
 		
-		Client client = clientService.createClient(form);
+		Admin admin = adminService.createAdmin(form);
 		
-		URI uri = uriBuilder.path("/client/{id}").buildAndExpand(client.getId_user()).toUri();
+		URI uri = uriBuilder.path("/client/{id}").buildAndExpand(admin.getId_user()).toUri();
 		
-		return ResponseEntity.created(uri).body(new UserDTO(client));
+		return ResponseEntity.created(uri).body(new UserDTO(admin));
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Client>> listAllClients(@RequestParam (required = false) String name) {
+	public ResponseEntity<List<Admin>> listAllClients(@RequestParam (required = false) String name) {
 		
-		List<Client> response = clientService.findAll();
+		List<Admin> response = adminService.findAll();
 		
 		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Client> findOneClient(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<Admin> findOneClient(@PathVariable(value = "id") Long id) {
 		
-		Client client = clientService.findById(id);
+		Admin admin = adminService.findById(id);
 		
-		return ResponseEntity.ok(client);		
+		return ResponseEntity.ok(admin);		
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteById(@PathVariable(value = "id") Long id) {
 		
-		clientService.delete(id);
+		adminService.delete(id);
 		
 		return ResponseEntity.ok().build();		
 	}
+	
 }

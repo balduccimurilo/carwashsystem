@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import com.tcc.lavarapido.enums.WashType;
+import com.tcc.lavarapido.models.dto.WashDTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,7 +48,7 @@ public class Wash implements Serializable {
 	private WashType washType;
 
 	@Column(nullable = false, name = "wash_price")
-	private BigDecimal price;
+	private Integer price;
 
 	@Column(name = "dt_reservation")
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
@@ -57,12 +58,20 @@ public class Wash implements Serializable {
 	@JoinColumn(name = "client_id_fk")
 	private Client client;
 
-	public Wash(Long idWash, WashType washType, BigDecimal price, LocalDateTime dtReservation) {
+	public Wash(Long idWash, WashType washType, Integer price, LocalDateTime dtReservation) {
 		super();
 		this.idWash = idWash;
 		this.washType = washType;
 		this.price = price;
 		this.dtReservation = dtReservation;
-	}	
+	}
+
+	public Wash(WashDTO washDto) {
+		this.idWash = washDto.getId();
+		this.washType = washDto.getWashType();
+		this.price = washDto.getPrice();
+		this.dtReservation = washDto.getDtReservation();
+		this.client = washDto.getClient();
+	}
 	
 }

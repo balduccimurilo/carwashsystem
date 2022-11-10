@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Entity;
 
 import com.tcc.lavarapido.enums.Profile;
+import com.tcc.lavarapido.models.dto.UserDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,5 +37,13 @@ public class Admin extends User{
 		super(email, password);
 	}
 	
-	
+	public Admin(UserDTO adminDto) {
+		this.id_user = adminDto.getId();
+		this.name = adminDto.getName();
+		this.email = adminDto.getEmail();
+		this.cel = adminDto.getCel();
+		this.cpf = adminDto.getCpf();
+		this.password = adminDto.getPassword();
+		this.profile = profile.ADMIN;
+	}
 }
