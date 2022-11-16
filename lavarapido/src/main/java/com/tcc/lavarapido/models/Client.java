@@ -1,8 +1,11 @@
 package com.tcc.lavarapido.models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
@@ -22,16 +25,9 @@ public class Client extends User {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@OneToMany(mappedBy = "client")
-	private List<Wash> washes = new ArrayList<>();
-	
-	public List<Wash> getWash() {
-		return washes;
-	}
-	
-	public void setWash(List<Wash> washes) {
-        this.washes = washes;
-    }
+	@OneToMany(mappedBy = "client", cascade=CascadeType.ALL)
+	private Set<Wash> washes = new HashSet<>();
+
 	
 	public Client() {
 		addProfile(Profile.CLIENT);

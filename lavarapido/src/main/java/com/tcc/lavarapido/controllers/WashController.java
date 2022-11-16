@@ -35,7 +35,7 @@ public class WashController {
 		
 		Wash wash = washService.createWash(form);
 		
-		URI uri = uriBuilder.path("/client/{id}").buildAndExpand(wash.getIdWash()).toUri();
+		URI uri = uriBuilder.path("/wash/{id}").buildAndExpand(wash.getIdWash()).toUri();
 		
 		return ResponseEntity.created(uri).body(new WashDTO(wash));
 	}
