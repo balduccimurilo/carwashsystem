@@ -60,7 +60,9 @@ public class ClientService {
 //		clientDto.setPassword(encoder.encode(clientDto.getPassword()));
 		
 		validaCpfAndEmail(clientDto);
-		clientDto.setCpf(clientDto.getCpf());
+		clientDto.setCpf(clientDto.getCpf().replaceAll("[./-]", "").trim());
+		clientDto.setCel(clientDto.getCel().replaceAll("-", "").trim());
+		
 		
 		newClient = new Client(clientDto);
 		
@@ -92,13 +94,12 @@ public class ClientService {
 	}
 	
 	public Client findClientByCpf(String cpfClient) {
-		return clientRepository.findByCpf(cpfClient)
+		return clientRepository.findByCpf(cpfClient.replaceAll("[./-]", "").trim())
 				.orElseThrow(() -> new ClientException(CLIENT_NOT_FOUND + cpfClient, HttpStatus.NOT_FOUND));
-		
 	}
 
 	private void validaCpfAndEmail(UserDTO clientDto) throws Exception {
-        Optional<Client> obj = clientRepository.findByCpf(clientDto.getCpf());
+        Optional<Client> obj = clientRepository.findByCpf(clientDto.getCpf().replaceAll("[./-]", "").trim());
         if(obj.isPresent() && obj.get().getId_user() != clientDto.getId()){
           throw new ClientException("CPF Já Cadastrado no Sistema", HttpStatus.BAD_REQUEST);
         }

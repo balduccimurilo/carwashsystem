@@ -31,7 +31,7 @@ public class WashController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<WashDTO> createClient(@RequestBody @Valid WashForm form, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<WashDTO> createWash(@RequestBody @Valid WashForm form, UriComponentsBuilder uriBuilder) {
 		
 		Wash wash = washService.createWash(form);
 		
