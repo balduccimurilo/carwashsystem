@@ -1,5 +1,6 @@
 package com.tcc.lavarapido.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,28 +9,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tcc.lavarapido.enums.Profile;
+import com.tcc.lavarapido.enums.IProfile;
+import com.tcc.lavarapido.exceptions.AdminException;
 import com.tcc.lavarapido.exceptions.ClientException;
-import com.tcc.lavarapido.models.Admin;
-import com.tcc.lavarapido.models.Client;
+import com.tcc.lavarapido.models.Profile;
+import com.tcc.lavarapido.models.User;
 import com.tcc.lavarapido.models.dto.UserDTO;
-import com.tcc.lavarapido.repositories.AdminRepository;
+import com.tcc.lavarapido.repositories.UserRepository;
 
 @Service
 public class AdminService {
 
 	@Autowired
-	final AdminRepository adminRepository;
+	final UserRepository userRepository;
 
-	public AdminService(AdminRepository adminRepository) {
+	public AdminService(UserRepository userRepository) {
 		super();
-		this.adminRepository = adminRepository;
+		this.userRepository = userRepository;
 	}
 
 	public static final String ADMIN_NOT_FOUND = "There isn't a admin with id = ";
 
 	@Transactional
-	public Admin createAdmin(UserDTO adminDto) {
+	public User createAdmin(UserDTO adminDto) {
 
 		try {
 
@@ -45,24 +47,34 @@ public class AdminService {
 			e.printStackTrace();
 		}
 
-		Admin newAdmin = new Admin(adminDto);
+//		Admin newAdmin = new Admin(adminDto);
 
-		return adminRepository.save(newAdmin);
+//		return adminRepository.save(newAdmin);
+		return null;
 	}
 	
-	public List<Admin> findAll() {
-        return adminRepository.findAll();
+	public List<User> findAll() {
+		List<User> findAll = userRepository.findAll();
+		for(User user : findAll) {
+			String string = user.getProfiles().toString();
+			if(user.getProfiles().toString().equals(IProfile.ADMIN)) {
+				
+			}
+		}
+        List<User> aux = new ArrayList<User>();
+		
+		return userRepository.findAll();
     }
 	
-	public Admin findById (Long id) {
+	public User findById (Long id) {
 		verifyIfIsAdmin(id);
-		return adminRepository.findById(id).
-			orElseThrow(() -> new ClientException(ADMIN_NOT_FOUND + id, HttpStatus.NOT_FOUND));
+		return userRepository.findById(id).
+			orElseThrow(() -> new AdminException(ADMIN_NOT_FOUND + id, HttpStatus.NOT_FOUND));
 	}
 	
 	private void verifyIfIsAdmin(Long id) {
-		Optional<Admin> obj = adminRepository.findById(id);
-		if(!obj.isPresent() || !obj.get().getProfile().equals(Profile.ADMIN)) {
+		Optional<User> obj = userRepository.findById(id);
+		if(!obj.isPresent() || !obj.get().getProfiles().equals(IProfile.ADMIN)) {
 			throw new ClientException(ADMIN_NOT_FOUND + id, HttpStatus.NOT_FOUND);
 		}
 	}
@@ -74,11 +86,11 @@ public class AdminService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		adminRepository.deleteById(id);
+		userRepository.deleteById(id);
 	}
 
 	private void verifyIfExists(Long id) throws Exception {
-		Optional<Admin> obj = adminRepository.findById(id);
+		Optional<User> obj = userRepository.findById(id);
 		if (!obj.isPresent()) {
 			throw new ClientException(ADMIN_NOT_FOUND + id, HttpStatus.NOT_FOUND);
 		}
@@ -86,12 +98,12 @@ public class AdminService {
 	}
 
 	private void validaCpfAndEmail(UserDTO adminDto) throws Exception {
-		Optional<Client> obj = adminRepository.findByCpf(adminDto.getCpf());
+		Optional<User> obj = userRepository.findByCpf(adminDto.getCpf());
 		if (obj.isPresent() && obj.get().getId_user() != adminDto.getId()) {
 			throw new Exception("CPF Já Cadastrado no Sistema");
 		}
 
-		obj = adminRepository.findByEmail(adminDto.getEmail());
+		obj = userRepository.findByEmail(adminDto.getEmail());
 		if (obj.isPresent() && obj.get().getId_user() != adminDto.getId()) {
 			throw new Exception("E-mail já cadastrado no sistema.");
 		}

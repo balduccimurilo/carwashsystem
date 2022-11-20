@@ -10,17 +10,23 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.tcc.lavarapido.enums.WashType;
 import com.tcc.lavarapido.models.dto.WashDTO;
 
@@ -57,17 +63,19 @@ public class Wash implements Serializable {
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime dtReservation;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name = "client_id")
-	@JsonIgnore
-	private Client client;
+	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+//	@JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_user")
+	@JsonIgnoreProperties({ "washes", "profiles"})
+	private User user;
+	
 
-	public Wash(Long idWash, WashType washType, Integer price, LocalDateTime dtReservation) {
-		super();
+	public Wash(Long idWash, WashType washType, Integer price, LocalDateTime dtReservation, User user) {
 		this.idWash = idWash;
 		this.washType = washType;
 		this.price = price;
 		this.dtReservation = dtReservation;
+		this.user = user;
 	}
 
 	public Wash(WashDTO washDto) {
@@ -75,7 +83,9 @@ public class Wash implements Serializable {
 		this.washType = washDto.getWashType();
 		this.price = washDto.getPrice();
 		this.dtReservation = washDto.getDtReservation();
-		this.client = washDto.getClient();
+		this.user = washDto.getUser();
 	}
+	
+	
 	
 }

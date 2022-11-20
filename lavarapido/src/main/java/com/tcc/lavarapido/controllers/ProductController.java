@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,61 +18,61 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.tcc.lavarapido.models.Fornecedor;
-import com.tcc.lavarapido.models.dto.FornecedorDTO;
-import com.tcc.lavarapido.services.FornecedorService;
+import com.tcc.lavarapido.models.Product;
+import com.tcc.lavarapido.models.dto.ProductDTO;
+import com.tcc.lavarapido.services.ProductService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/fornecedor")
-public class FornecedorController {
+@RequestMapping("/api/product")
+public class ProductController {
+	
+	@Autowired
+	ProductService productService;
 
 	@Autowired
-	FornecedorService fornecedorService;
-
-	@Autowired
-	public FornecedorController(FornecedorService fornecedorService) {
+	public ProductController(ProductService productService) {
 		super();
-		this.fornecedorService = fornecedorService;
+		this.productService = productService;
 	}
-
+	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<FornecedorDTO> createForncedor(@RequestBody @Valid FornecedorDTO form,
+	public ResponseEntity<ProductDTO> createForncedor(@RequestBody @Valid ProductDTO form,
 			UriComponentsBuilder uriBuilder) {
 
-		Fornecedor fornecedor = fornecedorService.createFornecedor(form);
+		Product product = productService.createProduct(form);
 
-		URI uri = uriBuilder.path("/fornecedor/{id}").buildAndExpand(fornecedor.getIdFornecedor()).toUri();
+		URI uri = uriBuilder.path("/product/{id}").buildAndExpand(product.getIdProduct()).toUri();
 
-		return ResponseEntity.created(uri).body(new FornecedorDTO(fornecedor));
+		return ResponseEntity.created(uri).body(new ProductDTO(product));
 	}
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<List<Fornecedor>> listAllFornecedores(@RequestParam(required = false) String name) {
+	public ResponseEntity<List<Product>> listAllFornecedores(@RequestParam(required = false) String name) {
 
-		List<Fornecedor> response = fornecedorService.findAll();
+		List<Product> response = productService.findAll();
 
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Fornecedor> findOneFornecedor(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<Product> findOneProduct(@PathVariable(value = "id") Long id) {
 
-		Fornecedor fornecedor = fornecedorService.findById(id);
+		Product product = productService.findById(id);
 
-		return ResponseEntity.ok(fornecedor);
+		return ResponseEntity.ok(product);
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> deleteById(@PathVariable(value = "id") Long id) {
 
-		fornecedorService.delete(id);
+		productService.delete(id);
 
 		return ResponseEntity.ok().build();
 	}
-
+	
+	
 }

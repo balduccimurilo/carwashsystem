@@ -2,6 +2,7 @@ package com.tcc.lavarapido.services;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,11 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tcc.lavarapido.enums.WashType;
 import com.tcc.lavarapido.exceptions.ClientException;
+import com.tcc.lavarapido.exceptions.WashException;
 import com.tcc.lavarapido.forms.WashForm;
-import com.tcc.lavarapido.models.Client;
+import com.tcc.lavarapido.models.User;
 import com.tcc.lavarapido.models.Wash;
 import com.tcc.lavarapido.models.dto.WashDTO;
-import com.tcc.lavarapido.repositories.ClientRepository;
+import com.tcc.lavarapido.repositories.UserRepository;
 import com.tcc.lavarapido.repositories.WashRepository;
 
 @Service
@@ -22,17 +24,19 @@ public class WashService {
 	
 	
 	private final WashRepository washRepository;
-	private final ClientRepository clientRepository;
+	private final UserRepository userRepository;
+	
+	public static final String WASH_NOT_FOUND = "There isn't a wash registred! ";
 	
 	public static final String CLIENT_CPF_NOT_FOUND = "There isn't a client with cpf = ";
 	
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
 	@Autowired
-	public WashService(WashRepository washRepository, ClientRepository clientRepository) {
+	public WashService(WashRepository washRepository, UserRepository userRepository) {
 		super();
 		this.washRepository = washRepository;
-		this.clientRepository = clientRepository;
+		this.userRepository = userRepository;
 	}
 	
 	@Transactional
@@ -55,10 +59,10 @@ public class WashService {
 		LocalDateTime dateTime = LocalDateTime.parse(washForm.getDtReservation(), formatter);
 		washDto.setDtReservation(dateTime);
 		
-		Client client = findClientByCpf(washForm.getCpfClient());
+		User client = findClientByCpf(washForm.getCpfClient());
 		
 		if(client != null) {
-			washDto.setClient(client);
+			washDto.setUser(client);;
 		}
 		
 		newWash = new Wash(washDto);
@@ -71,20 +75,29 @@ public class WashService {
 		return washRepository.save(newWash);
 	}
 	
-	public Client findClientByCpf(String cpfClient) {
-		return clientRepository.findByCpf(cpfClient)
+	public List<Wash> findAll() {
+		return washRepository.findAll();
+	}
+	
+	public Wash findById(Long id) {
+		return washRepository.findById(id)
+				.orElseThrow(() -> new WashException(WASH_NOT_FOUND + id, HttpStatus.NOT_FOUND));
+	}
+	
+	public User findClientByCpf(String cpfClient) {
+		return userRepository.findByCpf(cpfClient)
 				.orElseThrow(() -> new ClientException(CLIENT_CPF_NOT_FOUND + cpfClient, HttpStatus.NOT_FOUND));
 		
 	}
 
-//	@Transactional
-//	public void delete(Long id) {
-//		try {
-//			verifyIfExists(id);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		clientRepository.deleteById(id);
-//	}
+	@Transactional
+	public void delete(Long id) {
+		try {
+			findById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		userRepository.deleteById(id);
+	}
 
 }

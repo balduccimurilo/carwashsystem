@@ -2,9 +2,10 @@ package com.tcc.lavarapido.models.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.tcc.lavarapido.enums.WashType;
-import com.tcc.lavarapido.models.Client;
+import com.tcc.lavarapido.models.User;
 import com.tcc.lavarapido.models.Wash;
 
 import lombok.AllArgsConstructor;
@@ -22,14 +23,13 @@ public class WashDTO {
 	private WashType washType;
 	private Integer price;
 	private LocalDateTime dtReservation;
-	private Client client;
+	private User user;
 	
 	public WashDTO(Wash wash) {
 		this.id = wash.getIdWash();
 		this.washType = wash.getWashType();
 		this.price = wash.getPrice();
 		this.dtReservation = wash.getDtReservation();
-		this.client = wash.getClient();
+		this.user = wash.getUser();
 	}
-	
 }

@@ -3,7 +3,11 @@ package com.tcc.lavarapido.enums;
 public enum WashType {
 	
 	COMPLETE("Completa"),
-	BASIC("Basica");
+	BASIC("Basica"),
+	PRETINHO("Pretinho"),
+	INTERNA("Interna Aspirador"),
+	COMPLETACERA("Completa com Cera"),
+	POLIMENTO("Polimento");
 	
 	private String washType;
 

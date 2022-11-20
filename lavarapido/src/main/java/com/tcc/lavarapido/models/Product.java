@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tcc.lavarapido.models.dto.ProductDTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,18 +32,27 @@ public class Product implements Serializable {
 	private String name;
 	private String description;
 	private Double price;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "fornecedor_id")
 	@JsonIgnore
 	private Fornecedor fornecedor;
 
-	public Product(Long idProduct, String name, String description, Double price) {
+	public Product(Long idProduct, String name, String description, Double price, Fornecedor fornecedor) {
 		super();
 		this.idProduct = idProduct;
 		this.name = name;
 		this.description = description;
 		this.price = price;
+		this.fornecedor = fornecedor;
+	}
+
+	public Product(ProductDTO productDto) {
+		this.idProduct = productDto.getId();
+		this.name = productDto.getName();
+		this.description = productDto.getDescription();
+		this.price = productDto.getPrice();
+		this.fornecedor = productDto.getFornecedor();
 	}
 
 }

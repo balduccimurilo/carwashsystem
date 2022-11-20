@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tcc.lavarapido.exceptions.ClientException;
 import com.tcc.lavarapido.exceptions.FornecedorException;
 import com.tcc.lavarapido.models.Fornecedor;
 import com.tcc.lavarapido.models.dto.FornecedorDTO;
@@ -34,7 +33,7 @@ public class FornecedorService {
 	public Fornecedor findById(Long id) {
 		verifyFornecedor(id);
 		return fornecedorRepository.findById(id)
-				.orElseThrow(() -> new ClientException(FORNECEDOR_NOT_FOUND + id, HttpStatus.NOT_FOUND));
+				.orElseThrow(() -> new FornecedorException(FORNECEDOR_NOT_FOUND + id, HttpStatus.NOT_FOUND));
 	}
 
 	public Fornecedor findByFantasyName(String fantasyName) {
@@ -69,14 +68,6 @@ public class FornecedorService {
 		return fornecedorRepository.save(newFornecedor);
 	}
 
-	private void verifyCnpj(FornecedorDTO fornecedorDto) {
-		Optional<Fornecedor> obj = fornecedorRepository.findByCnpj(fornecedorDto.getCnpj());
-		if (obj.isPresent() && obj.get().getIdFornecedor() != fornecedorDto.getId()) {
-			throw new FornecedorException("CNPJ Já Cadastrado no Sistema", HttpStatus.BAD_REQUEST);
-		}
-
-	}
-
 	@Transactional
 	public void delete(Long id) {
 		try {
@@ -87,11 +78,19 @@ public class FornecedorService {
 		fornecedorRepository.deleteById(id);
 	}
 
-	private void verifyFornecedor(Long id) {
+	public void verifyFornecedor(Long id) {
 		Optional<Fornecedor> obj = fornecedorRepository.findById(id);
 		if (!obj.isPresent()) {
-			throw new ClientException(FORNECEDOR_NOT_FOUND + id, HttpStatus.NOT_FOUND);
+			throw new FornecedorException(FORNECEDOR_NOT_FOUND + id, HttpStatus.NOT_FOUND);
 		}
+	}
+
+	private void verifyCnpj(FornecedorDTO fornecedorDto) {
+		Optional<Fornecedor> obj = fornecedorRepository.findByCnpj(fornecedorDto.getCnpj());
+		if (obj.isPresent() && obj.get().getIdFornecedor() != fornecedorDto.getId()) {
+			throw new FornecedorException("CNPJ Já Cadastrado no Sistema", HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 }
