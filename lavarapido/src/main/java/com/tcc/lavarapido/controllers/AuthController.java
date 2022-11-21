@@ -1,5 +1,6 @@
 package com.tcc.lavarapido.controllers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,57 +23,56 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tcc.lavarapido.enums.IProfile;
+import com.tcc.lavarapido.enums.Role;
 import com.tcc.lavarapido.forms.LoginForm;
 import com.tcc.lavarapido.forms.MessageResponse;
 import com.tcc.lavarapido.forms.SignupRequest;
 import com.tcc.lavarapido.forms.UserInfoResponse;
-import com.tcc.lavarapido.impl.UserDetailsImpl;
 import com.tcc.lavarapido.models.Profile;
 import com.tcc.lavarapido.models.User;
+import com.tcc.lavarapido.models.dto.LoginDto;
 import com.tcc.lavarapido.repositories.ProfileRepository;
 import com.tcc.lavarapido.repositories.UserRepository;
-import com.tcc.lavarapido.security.JwtUtils;
+import com.tcc.lavarapido.security.TokenService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	@Autowired
-	AuthenticationManager authenticationManager;
 
+	private final AuthenticationManager authManager;
+	private final TokenService tokenService;
+	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	PasswordEncoder encoder;
+	
 
 	@Autowired
 	ProfileRepository profileRepository;
 
-	@Autowired
-	PasswordEncoder encoder;
 
-	@Autowired
-	JwtUtils jwtUtils;
-
-	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
-
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-		ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
-		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-				.collect(Collectors.toList());
-
-		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body(
-				new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+	public AuthController(AuthenticationManager authManager, TokenService tokenService) {
+		super();
+		this.authManager = authManager;
+		this.tokenService = tokenService;
 	}
 
+	
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByusername(signUpRequest.getUsername())) {
@@ -92,23 +92,26 @@ public class AuthController {
 						signUpRequest.getCel().replaceAll("-", "").trim());
 
 		Set<String> strProfiles = signUpRequest.getProfiles();
-		Set<Profile> roles = new HashSet<>();
+		List<Profile> roles = new ArrayList<>();
 
 		if (strProfiles == null) {
-			Profile userRole = profileRepository.findByProfile(IProfile.CLIENT)
+			user.setRole(Role.CLIENT);
+			Profile userRole = profileRepository.findByProfile(Role.CLIENT)
 					.orElseThrow(() -> new RuntimeException("Error: Profile is not found."));
 			roles.add(userRole);
 		} else {
 			strProfiles.forEach(role -> {
 				switch (role) {
 				case "admin":
-					Profile adminRole = profileRepository.findByProfile(IProfile.ADMIN)
+					user.setRole(Role.ADMIN);
+					Profile adminRole = profileRepository.findByProfile(Role.ADMIN)
 							.orElseThrow(() -> new RuntimeException("Error: Profile is not found."));
 					roles.add(adminRole);
 
 					break;
 				default:
-					Profile clientRole = profileRepository.findByProfile(IProfile.CLIENT)
+					user.setRole(Role.CLIENT);
+					Profile clientRole = profileRepository.findByProfile(Role.CLIENT)
 							.orElseThrow(() -> new RuntimeException("Error: Profile is not found."));
 					roles.add(clientRole);
 				}
@@ -122,10 +125,29 @@ public class AuthController {
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 
-	@PostMapping("/signout")
-	public ResponseEntity<?> logoutUser() {
-		ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-				.body(new MessageResponse("You've been signed out!"));
+//	@PostMapping("/signout")
+//	public ResponseEntity<?> logoutUser() {
+//		ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+//		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+//				.body(new MessageResponse("You've been signed out!"));
+//	}
+
+	@PostMapping("/signin")
+	public ResponseEntity<LoginDto> authenticate(@RequestBody @Valid LoginForm form) {
+
+		UsernamePasswordAuthenticationToken loginData = form.convert();
+
+		try {
+
+			Authentication authentication = authManager.authenticate(loginData);
+
+			String token = tokenService.generateToken(authentication);
+
+			User loggedUser = (User) authentication.getPrincipal();
+
+			return ResponseEntity.ok(new LoginDto(token, "Bearer", loggedUser.getId_user(), loggedUser.getRole()));
+		} catch (AuthenticationException e) {
+			return ResponseEntity.badRequest().build();
+		}
 	}
 }

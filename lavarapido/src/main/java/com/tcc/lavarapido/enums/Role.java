@@ -1,6 +1,6 @@
 package com.tcc.lavarapido.enums;
 
-public enum IProfile {
+public enum Role {
 	
 	ADMIN,
 	CLIENT	

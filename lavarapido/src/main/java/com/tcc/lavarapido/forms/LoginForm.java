@@ -2,6 +2,8 @@ package com.tcc.lavarapido.forms;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 public class LoginForm {
 
 	@NotBlank
@@ -9,6 +11,10 @@ public class LoginForm {
 
 	@NotBlank
 	private String password;
+	
+	public UsernamePasswordAuthenticationToken convert() {
+		return new UsernamePasswordAuthenticationToken(username, password);
+	}
 
 	public String getUsername() {
 		return username;

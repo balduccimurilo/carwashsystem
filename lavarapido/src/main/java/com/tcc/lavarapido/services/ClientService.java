@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tcc.lavarapido.enums.IProfile;
+import com.tcc.lavarapido.enums.Role;
 import com.tcc.lavarapido.exceptions.ClientException;
 import com.tcc.lavarapido.models.Profile;
 import com.tcc.lavarapido.models.User;
@@ -110,7 +110,7 @@ public class ClientService {
 		boolean compare = false;
 
 		for (Profile profile : obj.getProfiles()) {
-			if (profile.getProfile().equals(IProfile.CLIENT)) {
+			if (profile.getProfile().equals(Role.CLIENT)) {
 				compare = true;
 			}
 		}

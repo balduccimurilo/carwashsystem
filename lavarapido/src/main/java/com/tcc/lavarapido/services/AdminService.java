@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tcc.lavarapido.enums.IProfile;
+import com.tcc.lavarapido.enums.Role;
 import com.tcc.lavarapido.exceptions.AdminException;
 import com.tcc.lavarapido.exceptions.ClientException;
 import com.tcc.lavarapido.models.Profile;
@@ -57,7 +57,7 @@ public class AdminService {
 		List<User> findAll = userRepository.findAll();
 		for(User user : findAll) {
 			String string = user.getProfiles().toString();
-			if(user.getProfiles().toString().equals(IProfile.ADMIN)) {
+			if(user.getProfiles().toString().equals(Role.ADMIN)) {
 				
 			}
 		}
@@ -74,7 +74,7 @@ public class AdminService {
 	
 	private void verifyIfIsAdmin(Long id) {
 		Optional<User> obj = userRepository.findById(id);
-		if(!obj.isPresent() || !obj.get().getProfiles().equals(IProfile.ADMIN)) {
+		if(!obj.isPresent() || !obj.get().getProfiles().equals(Role.ADMIN)) {
 			throw new ClientException(ADMIN_NOT_FOUND + id, HttpStatus.NOT_FOUND);
 		}
 	}

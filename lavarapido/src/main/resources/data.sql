@@ -5,11 +5,11 @@ INSERT INTO profile(profile) VALUES('CLIENT');
 
 --Insert admin default
 
-INSERT INTO user_tb (cel, cpf, email, name, password, username) 
-VALUES ('00000000', '00000000000', 'admin@admin.com', 'Admin Complete Name', '$2a$10$yF10JCfnFV.aTJvcP08cBOHV9Ab1sQ5ekK4DlGCTLrrp5ob0CkMQa', 'admin');
+INSERT INTO user_tb (cel, cpf, email, name, password, role, username) 
+VALUES ('00000000', '00000000000', 'admin@admin.com', 'Admin Complete Name', '$2a$10$yF10JCfnFV.aTJvcP08cBOHV9Ab1sQ5ekK4DlGCTLrrp5ob0CkMQa', 'ADMIN', 'admin');
 
-INSERT INTO user_profiles (user_id, profile_id)
-VALUES ( 1, 1);
+--INSERT INTO user_profiles (user_id, profile_id)
+--VALUES ( 1, 1);
 
 --Insert cliend default
 
