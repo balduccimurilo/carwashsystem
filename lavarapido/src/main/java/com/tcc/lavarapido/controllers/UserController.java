@@ -83,7 +83,6 @@ public class UserController {
 //	}
 	
 	@GetMapping("/client")
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENT')")
 	public ResponseEntity<List<User>> listAllClients(@RequestParam (required = false) String name) {
 		
 		List<User> response = clientService.findAll();
@@ -92,7 +91,6 @@ public class UserController {
 	}
 	
 	@GetMapping("/client/{id}")
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENT')")
 	public ResponseEntity<User> findOneClient(@PathVariable(value = "id") Long id) {
 		
 		User client = clientService.findById(id);

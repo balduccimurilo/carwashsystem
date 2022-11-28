@@ -1,6 +1,5 @@
 package com.tcc.lavarapido.models;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,8 +16,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -38,7 +35,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "user_tb")
+@Table(name = "users")
 @Entity
 public class User implements UserDetails{
 
@@ -73,15 +70,9 @@ public class User implements UserDetails{
 	@Column(columnDefinition = "ENUM('ADMIN', 'CLIENT')")
     @Enumerated(EnumType.STRING)
 	private Role role;
-
-//	@ManyToMany(fetch = FetchType.LAZY)
-//	@JoinTable(name = "user_profiles", 
-//    	joinColumns = @JoinColumn(name = "user_id"),
-//    	inverseJoinColumns = @JoinColumn(name = "profile_id"))
-//	private Set<Profile> profiles = new HashSet<>();
 	
 	@Column(name = "profiles")
-	@OneToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profiles = new ArrayList<>();
 
 	public User(String username, String email, String password) {

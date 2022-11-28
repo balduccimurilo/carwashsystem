@@ -44,23 +44,11 @@ public class ClientService {
 	}
 
 	public User findById(Long id) {
-		verifyIfIsClient(id);	
 		
 		return userRepository.findById(id)
 				.orElseThrow(() -> new ClientException(CLIENT_NOT_FOUND + id, HttpStatus.NOT_FOUND));
 	}
 
-	private void verifyIfIsClient(Long id) {
-		Optional<User> obj = userRepository.findById(id);
-		
-		 User user = new User(obj);
-
-		boolean compareProfile = compareProfile(user);
-
-		if (!obj.isPresent() || compareProfile != true) {
-			throw new ClientException(USER_IS_NOT_CLIENT + id, HttpStatus.NOT_FOUND);
-		}
-	}
 
 //	@Transactional
 //	public User createClient(UserDTO clientDto) {

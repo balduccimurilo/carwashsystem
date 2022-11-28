@@ -12,6 +12,6 @@ public class LoginDto {
 	private String token;
 	private String type;
 	private Long user_ID;
-	private Role profile;
+	private Role role;
 
 }
