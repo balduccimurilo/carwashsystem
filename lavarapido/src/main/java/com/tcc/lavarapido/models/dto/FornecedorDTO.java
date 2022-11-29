@@ -20,6 +20,7 @@ public class FornecedorDTO {
 	private String address;
 	private String cel;
 	private String cnpj;
+	private String email;
 
 	public FornecedorDTO(Fornecedor fornecedor) {
 		this.id = fornecedor.getIdFornecedor();
@@ -29,6 +30,7 @@ public class FornecedorDTO {
 		this.fantasyName = fornecedor.getFantasyName();
 		this.name = fornecedor.getName();
 		this.razaoSocial = fornecedor.getRazaoSocial();
+		this.email = fornecedor.getEmail();
 	}
 
 }

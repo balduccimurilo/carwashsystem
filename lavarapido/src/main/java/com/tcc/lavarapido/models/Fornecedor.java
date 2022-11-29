@@ -38,12 +38,13 @@ public class Fornecedor implements Serializable {
 	private String address;
 	private String cel;
 	private String cnpj;
+	private String email;
 
 	@OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL)
 	private Set<Product> products = new HashSet<>();;
 
 	public Fornecedor(Long idFornecedor, String name, String fantasyName, String razaoSocial, String address,
-			String cel, String cnpj, Set<Product> products) {
+			String cel, String cnpj, Set<Product> products, String email) {
 		super();
 		this.idFornecedor = idFornecedor;
 		this.name = name;
@@ -52,6 +53,7 @@ public class Fornecedor implements Serializable {
 		this.address = address;
 		this.cel = cel;
 		this.cnpj = cnpj;
+		this.email = email;
 		this.products = products;
 	}
 
@@ -63,10 +65,11 @@ public class Fornecedor implements Serializable {
 		this.address = fornecedorDto.getAddress();
 		this.cel = fornecedorDto.getCel();
 		this.cnpj = fornecedorDto.getCnpj();
+		this.email = fornecedorDto.getEmail();
 	}
 
 	public Fornecedor(Long idFornecedor, String name, String fantasyName, String razaoSocial, String address,
-			String cel, String cnpj) {
+			String cel, String cnpj, String email) {
 		super();
 		this.idFornecedor = idFornecedor;
 		this.name = name;
@@ -75,6 +78,7 @@ public class Fornecedor implements Serializable {
 		this.address = address;
 		this.cel = cel;
 		this.cnpj = cnpj;
+		this.email = email;
 	}
 
 }

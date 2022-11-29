@@ -3,12 +3,15 @@ package com.tcc.lavarapido.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tcc.lavarapido.exceptions.ProductException;
+import com.tcc.lavarapido.forms.ProductForm;
 import com.tcc.lavarapido.models.Fornecedor;
 import com.tcc.lavarapido.models.Product;
 import com.tcc.lavarapido.models.dto.ProductDTO;
@@ -51,20 +54,26 @@ public class ProductService {
 	}
 	
 	@Transactional
-	public Product createProduct(ProductDTO productDto) {
+	public Product createProduct(@Valid ProductForm form) {
+			
+		ProductDTO dto = new ProductDTO();
 
 		Product newProduct = null;
 
 		try {
 
-			productDto.setId(null);
+			dto.setId(null);
 			
-			Fornecedor fornecedor = fornecedorService.findById(productDto.getFornecedor().getIdFornecedor());
+			Fornecedor fornecedor = fornecedorService.findById(form.getFornecedor_id());
 			if(fornecedor != null) {
-				productDto.setFornecedor(fornecedor);
+				dto.setFornecedor(fornecedor);
 			}
+			
+			dto.setDescription(form.getDescription());
+			dto.setName(form.getName());
+			dto.setPrice(form.getPrice());
 
-			newProduct = new Product(productDto);
+			newProduct = new Product(dto);
 
 		} catch (Exception e) {
 			e.printStackTrace();

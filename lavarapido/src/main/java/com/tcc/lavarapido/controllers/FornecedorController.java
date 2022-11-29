@@ -38,7 +38,6 @@ public class FornecedorController {
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<FornecedorDTO> createForncedor(@RequestBody @Valid FornecedorDTO form,
 			UriComponentsBuilder uriBuilder) {
 
@@ -50,7 +49,6 @@ public class FornecedorController {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<List<Fornecedor>> listAllFornecedores(@RequestParam(required = false) String name) {
 
 		List<Fornecedor> response = fornecedorService.findAll();
@@ -59,7 +57,6 @@ public class FornecedorController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Fornecedor> findOneFornecedor(@PathVariable(value = "id") Long id) {
 
 		Fornecedor fornecedor = fornecedorService.findById(id);
@@ -68,7 +65,6 @@ public class FornecedorController {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> deleteById(@PathVariable(value = "id") Long id) {
 
 		fornecedorService.delete(id);
