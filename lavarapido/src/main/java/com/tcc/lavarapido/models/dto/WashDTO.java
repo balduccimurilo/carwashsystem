@@ -24,6 +24,9 @@ public class WashDTO {
 	private Integer price;
 	private LocalDateTime dtReservation;
 	private User user;
+	private String carro;
+	private String placa;
+	private String clientName;
 	
 	public WashDTO(Wash wash) {
 		this.id = wash.getIdWash();
@@ -31,5 +34,8 @@ public class WashDTO {
 		this.price = wash.getPrice();
 		this.dtReservation = wash.getDtReservation();
 		this.user = wash.getUser();
+		this.clientName = wash.getClientName();
+		this.placa = wash.getPlaca();
+		this.carro = wash.getCarro();
 	}
 }

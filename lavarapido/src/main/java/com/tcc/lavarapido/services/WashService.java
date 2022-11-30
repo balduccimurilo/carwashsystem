@@ -28,6 +28,8 @@ public class WashService {
 	
 	public static final String WASH_NOT_FOUND = "There isn't a wash registred! ";
 	
+	public static final String DATE_ERROR = "Date need to be more then today. ";
+	
 	public static final String CLIENT_CPF_NOT_FOUND = "There isn't a client with cpf = ";
 	
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -39,6 +41,7 @@ public class WashService {
 		this.userRepository = userRepository;
 	}
 	
+	
 	@Transactional
 	public Wash createWash(WashForm washForm) {
 		
@@ -49,17 +52,27 @@ public class WashService {
 		try {
 			
 		washDto.setId(null);
-		if(washForm.getWashType().equals(WashType.BASIC)) {
-			washDto.setPrice(20);
-		} else {
-			washDto.setPrice(50);
+		Integer pricePerType = pricePerType(washForm.getWashType());
+
+		if(pricePerType != null) {
+			washDto.setPrice(pricePerType);
 		}
+		
+		washDto.setCarro(washForm.getCarro());
+		washDto.setPlaca(washForm.getPlaca());
+		
 		washDto.setWashType(washForm.getWashType());
 		
 		LocalDateTime dateTime = LocalDateTime.parse(washForm.getDtReservation(), formatter);
-		washDto.setDtReservation(dateTime);
+		if(dateTime.isAfter(LocalDateTime.now())) {
+			washDto.setDtReservation(dateTime);	
+		}else {
+			throw new WashException(DATE_ERROR, HttpStatus.BAD_REQUEST);
+		}
 		
 		User client = findClientByCpf(washForm.getCpfClient());
+		
+		washDto.setClientName(client.getName());
 		
 		if(client != null) {
 			washDto.setUser(client);;
@@ -99,5 +112,43 @@ public class WashService {
 		}
 		userRepository.deleteById(id);
 	}
+	
+	private Integer pricePerType(WashType washType) {
+		switch (washType) {
+
+		case BASIC:
+
+		return 20;
+
+		case COMPLETACERA:
+
+		return 60;
+
+
+		case COMPLETE:
+
+		return 50;
+
+		
+		case INTERNA:
+
+		return 30;
+			
+		case POLIMENTO:
+
+		return 300;
+			
+		case PRETINHO:
+
+		return 10;
+
+		default:
+
+		return 20;
+
+		}
+
+	}
+
 
 }

@@ -52,12 +52,22 @@ public class Wash implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idWash;
 
-	@Column(nullable = false, columnDefinition = "ENUM('COMPLETE', 'BASIC')")
+	@Column(nullable = false, columnDefinition = "ENUM('COMPLETE', 'BASIC', 'PRETINHO', 'INTERNA', 'COMPLETACERA', 'POLIMENTO' )")
 	@Enumerated(EnumType.STRING)
 	private WashType washType;
 
 	@Column(nullable = false, name = "wash_price")
 	private Integer price;
+	
+	@Column(nullable = false)
+	private String placa;
+	
+	@Column(nullable = false)
+	private String carro;
+	
+	@Column(nullable = false)
+	private String clientName;
+	
 
 	@Column(name = "dt_reservation")
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
@@ -69,14 +79,8 @@ public class Wash implements Serializable {
 	@JsonIgnoreProperties({ "washes", "profiles"})
 	private User user;
 	
-
-	public Wash(Long idWash, WashType washType, Integer price, LocalDateTime dtReservation, User user) {
-		this.idWash = idWash;
-		this.washType = washType;
-		this.price = price;
-		this.dtReservation = dtReservation;
-		this.user = user;
-	}
+	
+	
 
 	public Wash(WashDTO washDto) {
 		this.idWash = washDto.getId();
@@ -84,6 +88,25 @@ public class Wash implements Serializable {
 		this.price = washDto.getPrice();
 		this.dtReservation = washDto.getDtReservation();
 		this.user = washDto.getUser();
+		this.clientName = washDto.getClientName();
+		this.placa = washDto.getPlaca();
+		this.carro = washDto.getCarro();
+	}
+
+
+
+
+	public Wash(Long idWash, WashType washType, Integer price, String placa, String carro, String clientName,
+			LocalDateTime dtReservation, User user) {
+		super();
+		this.idWash = idWash;
+		this.washType = washType;
+		this.price = price;
+		this.placa = placa;
+		this.carro = carro;
+		this.clientName = clientName;
+		this.dtReservation = dtReservation;
+		this.user = user;
 	}
 	
 	

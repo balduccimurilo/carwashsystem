@@ -38,7 +38,6 @@ public class WashController {
 	}
 	
 	@PostMapping
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENT')")
 	public ResponseEntity<WashDTO> createWash(@RequestBody @Valid WashForm form, UriComponentsBuilder uriBuilder) {
 		
 		Wash wash = washService.createWash(form);
@@ -49,7 +48,6 @@ public class WashController {
 	}
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENT')")
 	public ResponseEntity<List<Wash>> listAllWash(@RequestParam(required = false) String name) {
 
 		List<Wash> response = washService.findAll();
@@ -58,7 +56,6 @@ public class WashController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENT')")
 	public ResponseEntity<Wash> findOneWash(@PathVariable(value = "id") Long id) {
 
 		Wash wash = washService.findById(id);
@@ -67,7 +64,6 @@ public class WashController {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENT')")
 	public ResponseEntity<Object> deleteById(@PathVariable(value = "id") Long id) {
 
 		washService.delete(id);
