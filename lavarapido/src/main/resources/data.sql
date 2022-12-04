@@ -12,22 +12,22 @@ VALUES ('00000000', '00000000000', 'admin@admin.com', 'Admin Complete Name', '$2
 
 --Insert profiles relation user
 
-INSERT INTO users_profiles (user_id_user, profiles_id)
+INSERT INTO users_profiles (user_id, profiles_id)
 VALUES ( 1, 1);
 
-INSERT INTO users_profiles (user_id_user, profiles_id)
+INSERT INTO users_profiles (user_id, profiles_id)
 VALUES ( 2, 2);
 
-INSERT INTO users_profiles (user_id_user, profiles_id)
+INSERT INTO users_profiles (user_id, profiles_id)
 VALUES ( 3, 2);
 
-INSERT INTO users_profiles (user_id_user, profiles_id)
+INSERT INTO users_profiles (user_id, profiles_id)
 VALUES ( 4, 2);
 
-INSERT INTO users_profiles (user_id_user, profiles_id)
+INSERT INTO users_profiles (user_id, profiles_id)
 VALUES ( 5, 2);
 
-INSERT INTO users_profiles (user_id_user, profiles_id)
+INSERT INTO users_profiles (user_id, profiles_id)
 VALUES ( 6, 2);
 
 --Insert cliend default

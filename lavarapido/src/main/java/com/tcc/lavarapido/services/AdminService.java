@@ -99,12 +99,12 @@ public class AdminService {
 
 	private void validaCpfAndEmail(UserDTO adminDto) throws Exception {
 		Optional<User> obj = userRepository.findByCpf(adminDto.getCpf());
-		if (obj.isPresent() && obj.get().getId_user() != adminDto.getId()) {
+		if (obj.isPresent() && obj.get().getId() != adminDto.getId()) {
 			throw new Exception("CPF Já Cadastrado no Sistema");
 		}
 
 		obj = userRepository.findByEmail(adminDto.getEmail());
-		if (obj.isPresent() && obj.get().getId_user() != adminDto.getId()) {
+		if (obj.isPresent() && obj.get().getId() != adminDto.getId()) {
 			throw new Exception("E-mail já cadastrado no sistema.");
 		}
 

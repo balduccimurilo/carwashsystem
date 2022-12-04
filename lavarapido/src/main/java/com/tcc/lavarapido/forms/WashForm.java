@@ -21,6 +21,7 @@ public class WashForm {
 	private BigDecimal price;
 	private String dtReservation;
 	private String cpfClient;
+	private Long idClient;
 	private String placa;
 	private String carro;
 	

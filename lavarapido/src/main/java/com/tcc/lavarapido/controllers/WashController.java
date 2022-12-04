@@ -62,6 +62,14 @@ public class WashController {
 
 		return ResponseEntity.ok(wash);
 	}
+	
+	@GetMapping("/user/{id}")
+	public ResponseEntity<List<Wash>> findByOneUser(@PathVariable(value = "id") Long id) {
+
+		List<Wash> response = washService.findByUserId(id);
+
+		return ResponseEntity.ok(response);
+	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteById(@PathVariable(value = "id") Long id) {

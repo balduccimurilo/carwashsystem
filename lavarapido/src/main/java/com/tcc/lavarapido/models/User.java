@@ -46,7 +46,7 @@ public class User implements UserDetails{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id_user;
+	private Long id;
 	
 	@NotBlank
 	private String username;
@@ -90,8 +90,8 @@ public class User implements UserDetails{
 		this.cel = cel;
 	}
 
-	public User(Long id_user, String name, String username, String email, String password, String cpf, String cel, Role role) {
-		this.id_user = id_user;
+	public User(Long id, String name, String username, String email, String password, String cpf, String cel, Role role) {
+		this.id = id;
 		this.name = name;
 		this.username = username;
 		this.email = email;
@@ -107,7 +107,7 @@ public class User implements UserDetails{
 
 
 	public User(Optional<User> obj) {
-		this.id_user = obj.get().getId_user();
+		this.id = obj.get().getId();
 		this.name = obj.get().getName();
 		this.username = obj.get().getUsername();
 		this.password = obj.get().getPassword();

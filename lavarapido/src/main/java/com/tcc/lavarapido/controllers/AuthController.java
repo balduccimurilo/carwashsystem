@@ -118,7 +118,7 @@ public class AuthController {
 			});
 		}
 
-		user.setId_user(null);
+		user.setId(null);
 		user.setProfiles(roles);
 		userRepository.save(user);
 
@@ -145,7 +145,7 @@ public class AuthController {
 
 			User loggedUser = (User) authentication.getPrincipal();
 
-			return ResponseEntity.ok(new LoginDto(token, "Bearer", loggedUser.getId_user(), loggedUser.getRole()));
+			return ResponseEntity.ok(new LoginDto(token, "Bearer", loggedUser.getId(), loggedUser.getRole()));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
 		}

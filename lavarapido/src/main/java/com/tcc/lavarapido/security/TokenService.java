@@ -28,7 +28,7 @@ public class TokenService {
 		Date expirationDate = new Date(todayDate.getTime() + Long.parseLong(expiration));
 
 		return Jwts.builder().setIssuer("API do Albergue") // quem fez a geração do token
-				.setSubject(loggedUser.getId_user().toString()) // usuario a quem esse token pertence
+				.setSubject(loggedUser.getId().toString()) // usuario a quem esse token pertence
 				.setIssuedAt(todayDate) // data de geração
 				.setExpiration(expirationDate) // data de expiração
 				.signWith(SignatureAlgorithm.HS256, secret) // usar a senha do application.properties / algoritmo de
